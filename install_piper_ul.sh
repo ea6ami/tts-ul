@@ -146,5 +146,5 @@ msg "TODO OK ✅"
 echo "Piper: ${BIN_DIR}/piper/piper"
 echo "Voz:   ${VOICE_ONNX_PATH}"
 echo "Test:  ${TEST_UL}"
-BASH
+
 
