@@ -31,17 +31,13 @@ No es necesario tener git instalado.
 ## Instalación (máquina nueva)
 
 ### 1. Descargar el script de instalación
-
+```
 wget https://raw.githubusercontent.com/ea6ami/tts-ul/main/install_piper_ul.sh
-
-### 2. Dar permisos de ejecución
 
 chmod +x install_piper_ul.sh
 
-### 3. Ejecutar la instalación
-
 ./install_piper_ul.sh
-
+```
 El script realiza:
 
 - instalación de dependencias mínimas
@@ -58,10 +54,11 @@ Si termina sin errores, el sistema queda listo.
 ## Generar audio .ul
 
 ### Descargar el script de generación
-
+```
 wget https://raw.githubusercontent.com/ea6ami/tts-ul/main/tts_to_ul.sh
-chmod +x tts_to_ul.sh
 
+chmod +x tts_to_ul.sh
+```
 ---
 
 ## Formas de uso
