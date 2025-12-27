@@ -41,15 +41,19 @@ done
 [[ -x "$PIPER_BIN" ]] || die "No existe Piper en: $PIPER_BIN"
 [[ -s "$MODEL" ]] || die "No existe el modelo en: $MODEL"
 
-# Decide input source (exactly one of: TEXT, FILE, STDIN)
+# Decide input source (exactly one of: TEXT, FILE, STDIN-with-data)
 input_count=0
 [[ -n "$TEXT" ]] && input_count=$((input_count+1))
 [[ -n "$FILE" ]] && input_count=$((input_count+1))
-if [[ -t 0 ]]; then
-  # stdin is a TTY -> no piped input
-  :
-else
-  input_count=$((input_count+1))
+
+# Solo cuenta stdin si HAY datos disponibles (no basta con "no es tty")
+stdin_has_data=0
+if [[ ! -t 0 ]]; then
+  # read -t 0 no consume, solo comprueba disponibilidad inmediata
+  if IFS= read -r -t 0 _; then
+    stdin_has_data=1
+    input_count=$((input_count+1))
+  fi
 fi
 
 if [[ "$input_count" -eq 0 ]]; then
@@ -67,9 +71,9 @@ if [[ -n "$TEXT" ]]; then
   printf "%s" "$TEXT" | "$PIPER_BIN" --model "$MODEL" --output_file "$tmpwav"
 elif [[ -n "$FILE" ]]; then
   [[ -s "$FILE" ]] || die "El archivo no existe o está vacío: $FILE"
-  cat "$FILE" | "$PIPER_BIN" --model "$MODEL" --output_file "$tmpwav"
+  "$PIPER_BIN" --model "$MODEL" --output_file "$tmpwav" < "$FILE"
 else
-  # stdin
+  # stdin (con datos)
   cat | "$PIPER_BIN" --model "$MODEL" --output_file "$tmpwav"
 fi
 
@@ -79,5 +83,3 @@ fi
 sox "$tmpwav" -r 8000 -c 1 -t ul "$OUT"
 
 [[ -s "$OUT" ]] || die "No se generó UL: $OUT"
-
-
